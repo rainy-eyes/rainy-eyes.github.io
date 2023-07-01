@@ -32,21 +32,18 @@ function takeScreenshot(canvas, settingsPanel) {
                 0, 0, canvas.width, canvas.height);
             captureStream.getVideoTracks()[0].stop();
             const data = canvas2.toDataURL();
-            // window.location.href = data;
             anchor.href = data;
             anchor.click();
 
             settingsPanel.classList.remove("hide");
             canvas.style.cursor = "initial";
             anchor.remove();
-            // scrshotImg.src = data;
         })
 
         } catch (err) {
           console.error("Error: " + err);
           settingsPanel.classList.remove("hide");
           canvas.style.cursor = "initial";
-        //   anchor.remove();
         }
       };
       
