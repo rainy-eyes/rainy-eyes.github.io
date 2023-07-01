@@ -2,6 +2,7 @@
 
 
 function takeScreenshot(canvas, settingsPanel) {
+    console.log("canvas, panel", canvas, settingsPanel)
     const anchor = document.createElement("a");
     const capture = async () => {
         try {
