@@ -1121,13 +1121,13 @@ function resetTabPositions() {
 
 
 // save as json
-const exportBtn = this.document.getElementById("screenshot");
+const exportBtn = this.document.getElementById("exportBtn");
 exportBtn.addEventListener("click", function() {
-    downloadJSON()
+    downloadJSON();
 })
 
 function downloadJSON() {
-    const json = JSON.stringify(shapes);
+    const json = JSON.stringify(shapes, null, 4);
     const filename = 'data.json';
 
     let element = document.createElement('a');
@@ -1142,25 +1142,14 @@ function downloadJSON() {
     document.body.removeChild(element);
 }
 
+                    // take screenshot
+const scrshotBtn = this.document.getElementById("screenshot");
+scrshotBtn.addEventListener("click", function() {
+    takeScreenshot(canvas, settingsPanel);
+});
 
 
 
-
-// languages
-const lang = {
-    "en": {
-        "help": {
-            "li": "left-click: new pattern",
-            "li": "right-click/space: pause/start",
-            "li": "r: repeat",
-            "li": "x: clear",
-            "li": "double-click: reset value",
-        },
-        "screenshot": {
-            "title": "screenshot",
-        },
-    }
-}
 
 
 })
