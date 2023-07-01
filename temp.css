@@ -8,6 +8,8 @@
   transition: 0.25s;
 }
 
+.hide {display: none !important;}
+
 body {
   overflow-x: hidden;
 }
