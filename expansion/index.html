@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expanding Shapes</title>
+    <link rel="stylesheet" href="exp.css">
+    <script src="exp.js" defer></script>
+    <script src="../screenshot.js" defer></script>
+</head>
+<body>
+    <canvas id="canvas1"></canvas>
+
+    <div id="cont" class="opened">
+        <div id="openBtn" class="btn tab">&#10096; &#10097;</div>
+        
+        <div id="help" class="btn tab">?
+            <div id="info">
+                <ul>
+                    <li>left-click: new pattern</li>
+                    <li>right-click/space: pause/start</li>
+                    <li>r: repeat</li>
+                    <li>s: save</li>
+                    <li>x: clear</li>
+                    <li>double-click: reset value</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div id="screenshot" class="btn tab" title="screenshot">
+            <span>&#10048;</span></div>
+        <div id="saveBtn" class="btn tab" title="left-click: save / right-click: delete all">&#9825;</div>
+
+
+        <!-- <div id="tab-1" class="btn tab template" data-count="1">1</div> -->
+        <div id="exportBtn" class="btn setting" title="download pattern settings">
+            <span>&#10151;</span></div>
+        <div id="resetBtn" class="btn setting" title="reset">&#9851;</div>
+        <div id="randomiseBtn" class="btn setting" title="left-click: randomise pattern / right-click: switch all / double-click: set random 6 checkboxes" value="true">&#9883;</div>
+        
+        <div id="fps" class="setting" title="frames per second">
+            <div class="title">FPS:</div>
+            <div class="minus btn">&#10096;</div>
+            <div class="display"></div>
+            <div class="plus btn">&#10097;</div>
+        </div>
+
+        <div id="layout" class="setting break">
+            <div class="title">layout:</div>
+            <div class="display btn"></div>
+            <div id="rndbox" class="btn">&#9883;</div>
+        </div>
+
+        <div id="side" class="setting">
+            <div class="title">side:</div>
+            <div class="display"></div>
+            <input type="range" min="3" max="10" step="1" value="5">
+            <div id="rndbox" class="btn">&#9883;</div>
+        </div>
+
+        <div id="maxSide" class="setting">
+            <div class="title">maxSide:</div>
+            <div class="display"></div>
+            <input type="range" min="1" max="10" step="1" value="5">
+            <div id="rndbox" class="btn">&#9883;</div>
+        </div>
+
+        <div id="fit" class="setting">
+            <div class="title">fit:</div>
+            <div class="display btn"></div>
+            <div id="rndbox" class="btn">&#9883;</div>
+        </div>
+
+        <div id="fitValue" class="setting">
+            <div class="title">fitValue:</div>
+            <div class="display"></div>
+            <input type="range" min="10" max="50" step="5" value="20">
+            <div id="rndbox" class="btn">&#9883;</div>
+        </div>
+
+        <div id="colorDifferenceMode" class="setting break">
+            <div class="title">colors:</div>
+            <div class="display btn"></div>
+            <div id="rndbox" class="btn">&#9883;</div>
+        </div>
+
+        <div id="colorDifference" class="setting">
+            <div class="title">setValue:</div>
+            <div class="display"></div>
+            <input type="range" min="0" max="355" step="5" value="0">
+            <div id="rndbox" class="btn">&#9883;</div>
+        </div>
+
+        <div id="startHue" class="setting">
+            <div id="changeHue" class="checkbox">&#9744;</div>
+            <div class="title">hue:</div>
+            <div class="display"></div>
+            <div id="displaycolor"></div>
+            <input type="range" min="1" max="360" step="1" value="220">
+            <div id="rndbox" class="btn">&#9883;</div>
+        </div>
+        <div id="startSaturate" class="setting">
+            <div id="changeSat" class="checkbox">&#9744;</div>
+            <div class="title">sat:</div>
+            <div class="display"></div>
+            <input type="range" min="0" max="100" step="1" value="90">
+            <div id="rndbox" class="btn">&#9883;</div>
+        </div>
+        <div id="startLight" class="setting">
+            <div id="changeLight" class="checkbox">&#9744;</div>
+            <div class="title">light:</div>
+            <div class="display"></div>
+            <input type="range" min="0" max="100" step="1" value="60">
+            <div id="rndbox" class="btn">&#9883;</div>
+        </div>
+
+        <div id="sizeChange" class="setting break">
+            <div class="title">sizeChange:</div>
+            <div class="display btn"></div>
+            <div id="rndbox" class="btn">&#9883;</div>
+        </div>
+
+        <div id="startSize" class="setting">
+            <div class="title">startSize:</div>
+            <div class="display"></div>
+            <input type="range" min="0" max="100" step="5" value="1">
+            <div id="rndbox" class="btn">&#9883;</div>
+        </div>
+        <div id="maxSize" class="setting">
+            <div class="title">maxSize:</div>
+            <div class="display"></div>
+            <input type="range" min="0" max="200" step="10" value="200">
+            <div id="rndbox" class="btn">&#9883;</div>
+        </div>
+        <div id="expansionSpeed" class="setting">
+            <div class="title">expansion:</div>
+            <div class="display"></div>
+            <input type="range" min="10" max="50" step="5" value="20">
+            <div id="rndbox" class="btn">&#9883;</div>
+        </div>
+
+        <div id="opacityShift" class="setting">
+            <div class="title">opacityShift:</div>
+            <div class="display"></div>
+            <input type="range" min="0" max="10" step="1" value="0">
+            <div id="rndbox" class="btn">&#9883;</div>
+        </div>
+
+        <div id="shapeSides" class="setting break">
+            <div class="title">n-Sides:</div>
+            <div class="display"></div>
+            <input type="range" min="1" max="8" step="1" value="1">
+            <div id="rndbox" class="btn">&#9883;</div>
+        </div>
+
+        <div id="rotationSpeed" class="setting">
+            <div class="title">rotation:</div>
+            <div class="display"></div>
+            <input type="range" min="0" max="10" step="1" value="0">
+            <div id="rndbox" class="btn">&#9883;</div>
+        </div>
+
+        <div id="lineWidth" class="setting break">
+            <div class="title">lineWidth:</div>
+            <div class="display"></div>
+            <input type="range" min="1" max="20" step="1" value="1">
+            <div id="rndbox" class="btn">&#9883;</div>
+        </div>
+        <div id="maxLineWidth" class="setting">
+            <div class="title">maxLineWidth:</div>
+            <div class="display"></div>
+            <input type="range" min="1" max="20" step="1" value="1">
+            <div id="rndbox" class="btn">&#9883;</div>
+        </div>
+
+        <div id="lineShift" class="setting">
+            <div class="title">lineShift:</div>
+            <div class="display"></div>
+            <input type="range" min="0" max="5" step="1" value="0">
+            <div id="rndbox" class="btn">&#9883;</div>
+        </div>
+
+
+    </div>
+    
+</body>
+</html>
