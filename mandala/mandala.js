@@ -40,11 +40,11 @@ window.addEventListener("load", function() {
             switch(e.which) {
                 case 1:
                     // start over
-                    startOver()
+                    startOver();
                     break;
                 case 3:
                     // pause/start
-                    pauseGame()
+                    pauseGame();
                     break;
             }
         }
@@ -52,7 +52,7 @@ window.addEventListener("load", function() {
     this.window.addEventListener("resize", function() {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
-        fitMaxSize = canvas.width < canvas.height ?
+        screenHalf = canvas.width < canvas.height ?
         canvas.width/2 : canvas.height/2;
     })
     const colorDisplay = document.getElementById("displaycolor");
@@ -60,12 +60,13 @@ window.addEventListener("load", function() {
     let debug = false;
     let looping;
     let gameOn = false;
-    const pie2 = Math.PI * 2;
     let fps = 30;
     let int = 1000/fps;
     let timer = 0;
     let lastTime = 0;
-    let fitMaxSize = canvas.width < canvas.height ?
+
+    const pie2 = Math.PI * 2;
+    let screenHalf = canvas.width < canvas.height ?
         canvas.width/2 : canvas.height/2;
 
     const checkboxChange = {true: "&#9745;", false: "&#9744;"}
@@ -79,14 +80,14 @@ window.addEventListener("load", function() {
                 "v": 1,
                 "reset":() => {return 1},
                 "rndVal": () => {return rndTrueFalse(0.2) ? 0 : rndTrueFalse(0.7) ? 1 : randomise(true, 10, 2);},
-                "rndCheck": true,
+                "rndCheck": false,
             };
             this.layers = {
                 "t": "layers",
-                "v": 1,
+                "v": 3,
                 "reset":() => {return 3},
-                "rndVal": () => {return randomise(true, 10, 1);},
-                "rndCheck": true,
+                "rndVal": () => {return randomise(true, 20, 1);},
+                "rndCheck": false,
             };
 
             this.colorDifferenceMode = {
@@ -164,6 +165,14 @@ window.addEventListener("load", function() {
                 },
                 "rndCheck": true,
                 "choices": ["line", "circle", "n-Shape"],
+            };
+
+            this.drawLinesFromCenter = {
+                "t": "drawLinesFromCenter",
+                "v": false,
+                "reset":() => {return false},
+                "rndVal": () => {return rndTrueFalse(0.2)},
+                "rndCheck": true,
             };
 
             this.shapeSides = {
@@ -283,14 +292,6 @@ window.addEventListener("load", function() {
                 "rndCheck": true,
             };
 
-            this.drawLinesFromCenter = {
-                "t": "drawLinesFromCenter",
-                "v": false,
-                "reset":() => {return false},
-                "rndVal": () => {return rndTrueFalse(0.2)},
-                "rndCheck": true,
-            };
-
             this.list = [];
         }
         collectSettings() {
@@ -349,15 +350,15 @@ window.addEventListener("load", function() {
 
             // this.shiftRadRepeat = randomise(true, 10, 0);
             this.shiftRadiusType = this.S.shiftRadiusType.v;
-            this.shiftRad = this.S.shiftRadMax.v;
+            this.shiftRadMax = this.S.shiftRadMax.v;
             this.shiftRadRepeat = this.S.shiftRadRepeat.v;
-            this.radStep = this.shiftRad/((this.steps/this.shiftRadRepeat)/2);
+            this.radStep = this.shiftRadMax/((this.steps/this.shiftRadRepeat)/2);
             this.shiftRadStep1 = this.radStep;
             this.shiftRadStep2 = this.radStep;
                         
-            this.maxRad1 = this.rad1 + this.shiftRad;
+            this.maxRad1 = this.rad1 + this.shiftRadMax;
             this.minRad1 = this.rad1;
-            this.maxRad2 = this.rad2 + this.shiftRad;
+            this.maxRad2 = this.rad2 + this.shiftRadMax;
             this.minRad2 = this.rad2;
             
             this.shapeSize = this.S.shapeSize.v;
@@ -502,7 +503,7 @@ window.addEventListener("load", function() {
                         || this.rad2 <= this.minRad2) {
                         this.shiftRadStep2 *= -1;}
                 }
-                else {
+                else { // shiftRadiusType === jagged
                     this.rad1 += this.shiftRadStep1;
                     this.rad2 += this.shiftRadStep2;
                     this.shiftRadStep1 *= -1;
@@ -516,7 +517,7 @@ window.addEventListener("load", function() {
             } else {
                 this.x = this.midX;
                 this.y = this.midY;
-            }
+                }
 
             }
 
@@ -584,13 +585,16 @@ window.addEventListener("load", function() {
 
 
     function createShapes() {
+        console.log("--create shapes", )
+        const layers = S.layers.v;
         let hue = S.startHue.v;
         let sat = S.startSaturate.v;
         let light = S.startLight.v;
-        let hueDiff = setColorDifference();
+        let hueDiff = setColorDifference(layers);
+        console.log("layers", layers)
 
         let radius = 0;
-        for (let i = 0; i < S.layers.v; i++) {
+        for (let i = 0; i < layers; i++) {
             S.list.forEach(set => {
                 if (set.rndCheck) {set.v = set.rndVal();}
             })
@@ -598,7 +602,7 @@ window.addEventListener("load", function() {
             if (S.colorDifferenceMode.v === "random") {
                 hueDiff = randomise(true, 350, 5);
             }
-            radius += randomise(true, fitMaxSize/S.layers.v, 5);
+            radius += randomise(true, screenHalf/layers, 5);
 
             shapes.push(new Shape(i, S, radius, hue, sat, light));
 
@@ -607,7 +611,7 @@ window.addEventListener("load", function() {
         }
     }
 
-    function setColorDifference() {
+    function setColorDifference(layers) {
         const mode = S.colorDifferenceMode.v;
         let diff = 0;
         switch(mode) {
@@ -615,13 +619,12 @@ window.addEventListener("load", function() {
                 diff = S.colorDifference.v;
                 break;
             case "proportional":
-                diff = Math.floor(360/S.layers.v);
+                diff = Math.floor(360/layers);
                 break;
             case "random":
                 diff = randomise(true, 350, 5);
                 break;
         }
-        // console.log("diff", diff)
         return diff;
     }
 
@@ -1077,197 +1080,6 @@ scrshotBtn.addEventListener("click", function() {
 
 
 
-// languages
-const lang = {
-    "en": {
-        "#help": {
-            "li": "left-click: new pattern",
-            "li": "right-click/space: pause/start",
-            "li": "r: repeat",
-            "li": "x: clear",
-            "li": "double-click: reset value",
-        },
-        "#screenshot": {
-            "title": "screenshot",
-        },
-        "#saveBtn": {
-            "title": "left-click",
-        },
-        "#resetBtn": {
-            "title": "reset",
-        },
-        "#randomiseBtn": {
-            "title": "left-click: randomise pattern / right-click: switch all / double-click: randomise checkboxes",
-        },
-        "#fps": {
-            "title": "frames per second",
-        },
-        "#clearCanvas .title": {
-            "text": "clearCanvas:",
-        },
-        "#drawCount .title": {
-            "text": "drawCount:",
-        },
-        "#layers .title": {
-            "text": "layers:",
-        },
-        "#colorDifferenceMode .title": {
-            "text": "colorDiffMode:",
-        },
-        "#colorDifference .title": {
-            "text": "clrDifference:",
-        },
-        "#startHue .title": {
-            "text": "hue:",
-        },
-        "#startSaturate .title": {
-            "text": "sat:",
-        },
-        "#startLight .title": {
-            "text": "light:",
-        },
-        "#colorShift .title": {
-            "text": "colorShift:",
-        },
-        "#shapeType .title": {
-            "text": "shapeType:",
-        },
-        "#shapeSize .title": {
-            "text": "shapeSize:",
-        },
-        "#vAngle .title": {
-            "text": "vAngle:",
-        },
-        "#vAngleOffset .title": {
-            "text": "vAngleOffset:",
-        },
-        "#lineCap .title": {
-            "text": "lineCap:",
-        },
-        "#lineWidth .title": {
-            "text": "lineWidth:",
-        },
-        "#maxLineWidth .title": {
-            "text": "maxLineWidth:",
-        },
-        "#lineShiftRepeat .title": {
-            "text": "lineShiftRepeat:",
-        },
-        "#ellipseVal .title": {
-            "text": "ellipseVal:",
-        },
-        "#shiftRadiusType .title": {
-            "text": "shiftRadiusType:",
-        },
-        "#shiftRadRepeat .title": {
-            "text": "shiftRadRepeat:",
-        },
-        "#shiftRadMax .title": {
-            "text": "shiftRadMax:",
-        },
-        "#opacityShift .title": {
-            "text": "opacityShift:",
-        },
-        "#drawLinesFromCenter .title": {
-            "text": "drawLinesFromCenter:",
-        },
-
-    },
-    "hu": {
-        "#help": {
-            "li": "bal-gomb: új alakzat",
-            "li": "jobb-gomb/space: pause/start",
-            "li": "r: ismétlés",
-            "li": "x: törlés",
-            "li": "dupla-kattintás: érték visszaállítás",
-        },
-        "#screenshot": {
-            "title": "képernyőkép",
-        },
-        "#saveBtn": {
-            "title": "bal-gomb: mentés / jobb-gomb: összes törlése",
-        },
-        "#resetBtn": {
-            "title": "visszaÁllítás",
-        },
-        "#randomiseBtn": {
-            "title": "bal-gomb: véletlenszerűsít / jobb-gomb: összes kapcsolása / dupla-kattintás: véletlenszerű kapcsolás",
-        },
-        "#fps": {
-            "title": "másodpercenkénti képkockák száma",
-        },
-        "#clearCanvas .title": {
-            "text": "vászonTörlés:",
-        },
-        "#drawCount .title": {
-            "text": "körbejárás:",
-        },
-        "#layers .title": {
-            "text": "alakzatok:",
-        },
-        "#colorDifferenceMode .title": {
-            "text": "színválasztás mód:",
-        },
-        "#colorDifference .title": {
-            "text": "színkülönbség:",
-        },
-        "#startHue .title": {
-            "text": "árnyalat:",
-        },
-        "#startSaturate .title": {
-            "text": "telítettség:",
-        },
-        "#startLight .title": {
-            "text": "fényerő:",
-        },
-        "#colorShift .title": {
-            "text": "színVáltozás:",
-        },
-        "#shapeType .title": {
-            "text": "alakzatTípus:",
-        },
-        "#shapeSize .title": {
-            "text": "alakMéret:",
-        },
-        "#vAngle .title": {
-            "text": "szögVáltozás:",
-        },
-        "#vAngleOffset .title": {
-            "text": "szögEltolás:",
-        },
-        "#lineCap .title": {
-            "text": "vonalVég:",
-        },
-        "#lineWidth .title": {
-            "text": "vonalVastagság:",
-        },
-        "#maxLineWidth .title": {
-            "text": "maxVonalVastagság:",
-        },
-        "#lineShiftRepeat .title": {
-            "text": "vonalVáltozás:",
-        },
-        "#ellipseVal .title": {
-            "text": "ellipszisÉrték:",
-        },
-        "#shiftRadiusType .title": {
-            "text": "sugárVáltozásTípus:",
-        },
-        "#shiftRadRepeat .title": {
-            "text": "sugárVáltIsmétlés:",
-        },
-        "#shiftRadMax .title": {
-            "text": "maxSugár:",
-        },
-        "#opacityShift .title": {
-            "text": "átlátszóságVáltozás:",
-        },
-        "#drawLinesFromCenter .title": {
-            "text": "középponttalÖsszeköt:",
-        },
-
-    }
-}
 
 
 })
