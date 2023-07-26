@@ -293,8 +293,8 @@ class Circle {
         this.dashLength = randomise(true, ((360/this.segments)-30), 10);
         if (this.dashLength < 0) {this.dashLength = 1;}
         this.dashGap = this.circumference/this.segments - this.dashLength;
-        this.vDash = Number(((this.rad/this.segments)/15).toFixed(2));
-        // this.vDash = randomise(true, 10, 1)/10;
+        // this.vDash = Number(((this.rad/this.segments)/15).toFixed(2));
+        this.vDash = randomise(true, 10, 1)/10;
         // this.vDash = randomise(true, (1+(this.rad/10)), 1)/10;
 
         // this.vDash *= (1+(this.rad/100));
@@ -304,9 +304,22 @@ class Circle {
         this.hue = hue;
         this.sat = sat;
         this.light = light;
-        this.hueShift = rndTrueFalse(0.5) ? 1 : -1;
-        this.satShift = rndTrueFalse(0.5) ? 1 : -1;
-        this.lightShift = rndTrueFalse(0.5) ? 1 : -1;
+        
+        // this.hueShift = rndTrueFalse(0.5) ? 1 : -1;
+        // this.satShift = rndTrueFalse(0.5) ? 1 : -1;
+        // this.lightShift = rndTrueFalse(0.5) ? 1 : -1;
+
+        this.hueShift = randomise(true, 10, 1);
+        this.hueShift = rndTrueFalse(0.5) ? 
+            this.hueShift/10 : this.hueShift/-10;
+
+        this.satShift = randomise(true, 10, 1);
+        this.satShift = rndTrueFalse(0.5) ? 
+            this.satShift/10 : this.satShift/-10;
+
+        this.lightShift = randomise(true, 10, 1);
+        this.lightShift = rndTrueFalse(0.5) ? 
+            this.lightShift/10 : this.lightShift/-10;
         
         this.minLineWidth = this.S.lineWidth.v;
         this.lineWidth = randomise(true, this.S.maxLineWidth.v, S.lineWidth.v);
@@ -317,7 +330,7 @@ class Circle {
 
         this.opacityShift = this.S.opacityShift.v;
         this.opacity = 1;
-        this.vOpac = randomise(false, this.opacityShift, 0.01, 2);
+        this.vOpac = randomise(false, this.opacityShift, 0, 2);
     }
     draw() {
         this.ctx.save();
@@ -349,7 +362,7 @@ class Circle {
             }
             this.dashLength += this.vDash;
             this.dashGap = this.circumference/this.segments-this.dashLength;
-            if (this.dashLength < 0) {this.dashLength = 2;}
+            if (this.dashLength < 0) {this.dashLength = 1;}
         }
 
         if (this.S.changeHue.v) {
