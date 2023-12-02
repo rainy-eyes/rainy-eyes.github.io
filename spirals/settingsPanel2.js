@@ -656,7 +656,6 @@ const cssrules = `
     right: 56px;
     top: -11px;
     border-top-right-radius: 5px;
-    border: 1px solid red;
   }
 
   #settingsPanel #screenshot {
