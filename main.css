@@ -1,0 +1,87 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  transition: 0.5s;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+}
+
+body {
+  background-color: #111;
+  color: #bbb;
+  min-height: 100vh;
+  padding-bottom: 50px;
+}
+
+#canvas1 {
+  z-index: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+h1 {
+  position: relative;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: "Trebuchet MS";
+  font-size: 50px;
+  text-align: center;
+}
+
+h2 {
+  position: relative;
+  top: 10px;
+  font-size: 25px;
+  text-align: center;
+}
+
+#cont {
+  position: relative;
+  top: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  height: 65vh;
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-template-rows: auto auto;
+  justify-content: space-between;
+  align-content: space-between;
+}
+#cont .link {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  border: 3px solid #bbb;
+  border-radius: 5px;
+}
+#cont .link:hover {
+  color: cadetblue !important;
+  border-color: cadetblue !important;
+}
+#cont .link:active {
+  color: royalblue !important;
+}
+#cont .link a {
+  display: block;
+  text-decoration: none;
+  color: #bbb;
+  font-size: 25px;
+  text-align: center;
+  text-transform: uppercase;
+  padding: 10px;
+}
+#cont .link a:hover {
+  color: cadetblue !important;
+  border-color: cadetblue !important;
+}
+#cont .link a:active {
+  color: royalblue !important;
+}/*# sourceMappingURL=main.css.map */
